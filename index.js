@@ -24,6 +24,14 @@ async function run() {
         const productsCollection = database.collection('rooms');
         const bookingCollection = database.collection('bookings');
 
+        // POST API
+        app.post('/rooms', async (req, res) => {
+            const newRoom = req.body;
+            console.log(newRoom);
+            const result = await productsCollection.insertOne(newRoom);
+            res.send(result);
+        });
+
         // GET API
         app.get('/rooms', async (req, res) => {
             const cursor = productsCollection.find({});
