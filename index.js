@@ -52,6 +52,7 @@ async function run() {
             res.send(bookings);
         });
 
+
         // get booking data by email using post request
         app.post('/bookings/byEmail', async (req, res) => {
 
@@ -60,6 +61,15 @@ async function run() {
             const booking = await bookingCollection.find(query).toArray();
             res.send(booking);
         });
+
+
+        // delete order by id under one email
+        app.delete('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
+            res.json(result);
+        })
 
 
     }
