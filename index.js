@@ -22,6 +22,7 @@ async function run() {
         await client.connect();
         const database = client.db('hotel_ressort')
         const productsCollection = database.collection('rooms');
+        const bookingCollection = database.collection('bookings');
 
         // GET API
         app.get('/rooms', async (req, res) => {
@@ -35,9 +36,31 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const room = await productsCollection.findOne(query);
-            console.log("loaded room id ", id);
             res.send(room);
-        })
+        });
+
+        // Add Orders API
+        app.post('/bookings', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingCollection.insertOne(booking);
+            res.json(result);
+        });
+        // GET all bookings
+        app.get('/bookings', async (req, res) => {
+            const cursor = bookingCollection.find({});
+            const bookings = await cursor.toArray();
+            res.send(bookings);
+        });
+
+        // get booking data by email using post request
+        app.post('/bookings/byEmail', async (req, res) => {
+
+            const email = req.body;
+            const query = { email: { $in: email } }
+            const booking = await bookingCollection.find(query).toArray();
+            res.send(booking);
+        });
+
 
     }
     finally {
