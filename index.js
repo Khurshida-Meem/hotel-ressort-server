@@ -70,6 +70,20 @@ async function run() {
             res.send(booking);
         });
 
+        // UPDATE API
+        app.put('/bookings/:id', async (req, res) => {
+            id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: { status: "Booked" }
+                }
+            };
+            const result = await bookingCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+
+        })
 
         // delete order by id under one email
         app.delete('/bookings/:id', async (req, res) => {
